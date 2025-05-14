@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @default(uuid())
+  email          String          @unique
+  password       String
+  name           String
+  bio            String?
+  avatarUrl      String?
+  isAdmin        Boolean         @default(false)
+  contents       Content[]
+  favorites      Favorite[]
+  notifications  Notification[]
+  comments       Comment[]
+  series         Series[]
+  createdAt      DateTime        @default(now())
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  contents  Content[]
+}
+
+model Tag {
+  id        String         @id @default(uuid())
+  name      String         @unique
+  contents  ContentTag[]
+}
+
+model Series {
+  id        String     @id @default(uuid())
+  title     String
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+  episodes  Content[]
+  createdAt DateTime   @default(now())
+}
+
+model Content {
+  id            String            @id @default(uuid())
+  title         String
+  description   String?
+  thumbnailUrl  String?
+  contentType   String            // video, audio, blog, evento, etc.
+  published     Boolean           @default(false)
+  scheduledAt   DateTime?
+  categoryId    String
+  category      Category          @relation(fields: [categoryId], references: [id])
+  userId        String
+  user          User              @relation(fields: [userId], references: [id])
+  seriesId      String?
+  series        Series?           @relation(fields: [seriesId], references: [id])
+  media         Media[]
+  tags          ContentTag[]
+  comments      Comment[]
+  favorites     Favorite[]
+  translations  ContentTranslation[]
+  views         Int               @default(0)
+  votes         Int               @default(0)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+model Media {
+  id         String   @id @default(uuid())
+  contentId  String
+  content    Content  @relation(fields: [contentId], references: [id])
+  type       String   // imagem, vídeo, áudio, blog
+  url        String
+  createdAt  DateTime @default(now())
+}
+
+model ContentTag {
+  id         String   @id @default(uuid())
+  contentId  String
+  content    Content  @relation(fields: [contentId], references: [id])
+  tagId      String
+  tag        Tag      @relation(fields: [tagId], references: [id])
+}
+
+model Favorite {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  contentId  String
+  content    Content  @relation(fields: [contentId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  message    String
+  link       String?
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  contentId  String
+  content    Content  @relation(fields: [contentId], references: [id])
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  text       String
+  createdAt  DateTime @default(now())
+}
+
+model ContentTranslation {
+  id          String   @id @default(uuid())
+  contentId   String
+  content     Content  @relation(fields: [contentId], references: [id])
+  language    String   // ex: "pt", "en", "es"
+  title       String
+  description String?
+}

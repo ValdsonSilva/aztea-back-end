@@ -1,0 +1,43 @@
+# Node.js
+node_modules/
+dist/
+build/
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor configs
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Prisma
+prisma/dev.db
+prisma/migrations/*/migration.sql
+prisma/.DS_Store
+
+# Ambiente
+.env
+.env.local
+.env.test
+.env.development
+.env.production
+
+# React (quando adicionar front-end)
+*.cache/
+.next/
+out/
+coverage/
+
+# Others
+package-lock.json
