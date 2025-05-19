@@ -1,22 +1,22 @@
-// routes/userRoutes.ts
-import { Router } from 'express';
-import { UserController } from '../controllers/UserController';
+import {Router} from "express";
+import UserController from "../controllers/UserController.js";
 
-const router = Router();
+// routes/userRoutes.ts
+const userRoutes = Router();
 
 // GET /users - Lista todos os usuários
-router.get('/', UserController.index);
+userRoutes.get('/', UserController.index);
 
 // GET /users/:id - Busca usuário por ID
-router.get('/:id', UserController.show);
+userRoutes.get('/:id', UserController.show);
 
 // POST /users - Cria um novo usuário
-router.post('/', UserController.store);
+userRoutes.post('/', UserController.store);
 
 // PUT /users/:id - Atualiza um usuário
-router.put('/:id', UserController.update);
+userRoutes.put('/:id', UserController.update);
 
 // DELETE /users/:id - Deleta um usuário
-router.delete('/:id', UserController.destroy);
+userRoutes.delete('/:id', UserController.destroy);
 
-export default router;
+export default userRoutes;

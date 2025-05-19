@@ -20,6 +20,8 @@ model User {
   notifications  Notification[]
   comments       Comment[]
   series         Series[]
+  submissions    Submission[]    @relation("UserSubmissions")
+  reviewedSubs   Submission[]    @relation("AdminReviewer")
   createdAt      DateTime        @default(now())
 }
 
@@ -122,4 +124,17 @@ model ContentTranslation {
   language    String   // ex: "pt", "en", "es"
   title       String
   description String?
+}
+
+model Submission {
+  id           String   @id @default(uuid())
+  title        String
+  description  String?
+  userId       String
+  user         User     @relation("UserSubmissions", fields: [userId], references: [id])
+  status       String   @default("pending") // pending, approved, rejected
+  adminId      String?
+  admin        User?    @relation("AdminReviewer", fields: [adminId], references: [id])
+  reviewedAt   DateTime?
+  createdAt    DateTime @default(now())
 }

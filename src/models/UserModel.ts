@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export const UserModel = {
 
-    findAll: async (): Promise<User[]> => {
+    findAll: async (): Promise<User[] | null> => {
         return await prisma.user.findMany();
     },
 
@@ -18,18 +18,25 @@ export const UserModel = {
         name: string;
         bio?: string;
         avatarUrl?: string;
-    }): Promise<User> => {
+    }): Promise<User | null> => {
         return await prisma.user.create({data});
     },
 
-    update: async (id: string, data: Partial<User>): Promise<User> => {
+    update: async (id: string, data: Partial<User>): Promise<User | null> => {
+        const exists = await prisma.user.findUnique({ where: { id } });
+        if (!exists) return null;
+
         return await prisma.user.update({
             where: { id },
             data,
         });
     },
 
-    delete: async (id: string): Promise<User> => {
-        return await prisma.user.delete({where: { id }});
-    },
+    delete: async (id: string): Promise<User | null> => {
+        const exists = await prisma.user.findUnique({ where: { id } });
+        if (!exists) return null;
+
+        return await prisma.user.delete({ where: { id } });
+    }
+
 }
