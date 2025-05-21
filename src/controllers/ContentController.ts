@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ContentModel } from "../models/ContentModel.js";
+import { MediaModel } from "../models/MediaModel.js";
 
 const ContentController = {
 
@@ -47,6 +48,11 @@ const ContentController = {
       }
 
       const content = await ContentModel.create(data);
+
+      if (data.media) {
+        const media = await MediaModel.create(data.media)
+      }
+
       res.status(201).json(content);
 
     } catch (error) {
