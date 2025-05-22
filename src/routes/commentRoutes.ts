@@ -1,0 +1,14 @@
+import CommentController from "../controllers/CommentController.js";
+import { Router } from "express";
+
+const commentRoutes = Router();
+
+commentRoutes.get('/', CommentController.index);
+commentRoutes.get('/:id', CommentController.show);
+commentRoutes.get('/:contentId', CommentController.showByContentId);
+commentRoutes.get('/:userId', CommentController.showByUserId);     
+commentRoutes.post('/', CommentController.store);
+commentRoutes.put('/:id', CommentController.update);
+commentRoutes.delete('/:id', CommentController.delete);
+
+export default commentRoutes;
