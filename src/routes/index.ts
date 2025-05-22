@@ -5,6 +5,7 @@ import categoryRoutes from './categoryRoutes.js';
 import tagRoutes from './tagRoutes.js';
 import serieRoutes from './serieRoutes.js';
 import favoriteRoutes from './favoriteRoutes.js';
+import notificationRoutes from './notificationRoutes.js';
 
 const router = express.Router();
 
@@ -14,5 +15,6 @@ router.use('/categories', categoryRoutes);
 router.use('/tags', tagRoutes);
 router.use('/series', serieRoutes);
 router.use('/favorites', favoriteRoutes);
+router.use('/notifications', notificationRoutes);
 
 export default router;

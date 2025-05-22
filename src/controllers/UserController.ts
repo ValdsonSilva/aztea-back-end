@@ -8,7 +8,7 @@ const UserController = {
         try {
             const users = await UserModel.findAll();
 
-            if (!users) return res.status(404).json({ message: "Usuário não encontrado" });
+            if (!users) res.status(404).json({ message: "Usuário não encontrado" });
 
             res.status(200).json(users);
 
@@ -22,7 +22,7 @@ const UserController = {
         try {
             const user = await UserModel.findById(req.params.id);
 
-            if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
+            if (!user) res.status(404).json({ message: "Usuário não encontrado" });
 
             res.status(200).json(user);
         } catch (error) {
@@ -37,7 +37,7 @@ const UserController = {
             
             // Verifica se os campos obrigatórios estão presentes
             if (!email || !password || !name) {
-                return res.status(400).json({ message: "Email, senha e nome são obrigatórios" });
+                res.status(400).json({ message: "Email, senha e nome são obrigatórios" });
             }
 
             const user = await UserModel.create({
@@ -62,7 +62,7 @@ const UserController = {
         try {
             const user = await UserModel.update(req.params.id, req.body);
 
-            if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
+            if (!user) res.status(404).json({ message: "Usuário não encontrado" });
 
             res.status(200).json(user);
 
@@ -76,7 +76,7 @@ const UserController = {
         try {
             const user = await UserModel.delete(req.params.id);
 
-            if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
+            if (!user) res.status(404).json({ message: "Usuário não encontrado" });
 
             res.status(200).json(user);
 
