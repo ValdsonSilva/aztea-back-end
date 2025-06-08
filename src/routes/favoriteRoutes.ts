@@ -7,6 +7,6 @@ favoriteRoutes.get('/', FavoriteController.index);
 favoriteRoutes.get('/:id', FavoriteController.show);
 favoriteRoutes.post('/', FavoriteController.store);
 favoriteRoutes.put('/:id', FavoriteController.update);
-favoriteRoutes.delete('/:id', FavoriteController.delete);
+favoriteRoutes.delete('/:id', FavoriteController.destroy);
 
 export default favoriteRoutes;

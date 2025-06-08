@@ -77,6 +77,7 @@ model Media {
   content    Content  @relation(fields: [contentId], references: [id])
   type       String   // imagem, vídeo, áudio, blog
   url        String
+  publicId   String?
   createdAt  DateTime @default(now())
 }
 

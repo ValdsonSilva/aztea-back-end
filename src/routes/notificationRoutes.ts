@@ -7,6 +7,6 @@ notificationRoutes.get('/', NotificationController.index);
 notificationRoutes.get('/:id', NotificationController.show);
 notificationRoutes.post('/', NotificationController.store);
 notificationRoutes.put('/:id', NotificationController.update);
-notificationRoutes.delete('/:id', NotificationController.delete);
+notificationRoutes.delete('/:id', NotificationController.destroy);
 
 export default notificationRoutes;

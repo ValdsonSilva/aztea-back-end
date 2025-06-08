@@ -33,9 +33,11 @@ const FavoriteController = {
     },
 
     store: async (req: Request, res: Response) => {
-        const {data} = req.body;
+        const {userId, contentId} = req.body;
 
-        if (!data) res.status(404).json({message: "Dados não informados"});
+        if (!userId || !contentId) res.status(404).json({message: "Ids não informados"});
+
+        const data: any = {userId, contentId};
 
         try {
             const favorite = await FavoriteModel.create(data);
@@ -65,7 +67,7 @@ const FavoriteController = {
         }
     },
 
-    delete: async (req: Request, res: Response) => {
+    destroy: async (req: Request, res: Response) => {
         const {id} = req.params;
         if (!id) res.status(404).json({message: "Favorito não encontrado"});
 
@@ -75,7 +77,7 @@ const FavoriteController = {
             res.status(200).json({favorite});
 
         } catch (error) {
-            console.error("Erro FavoriteController.delete:", error);
+            console.error("Erro FavoriteController.destroy:", error);
             res.status(500).json({message: "Erro ao deletar favorito", error});
         }
     }

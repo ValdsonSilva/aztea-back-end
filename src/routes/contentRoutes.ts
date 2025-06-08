@@ -1,15 +1,16 @@
 import Router from 'express';
 import ContentController  from '../controllers/ContentController.js';
+import upload from '../middlewars/multer.js';
 
-const router = Router();
+const contentRoutes = Router();
 
-router.get('/', ContentController.index);
-router.get('/:id', ContentController.show);
-router.post('/', ContentController.store);
-router.put('/:id', ContentController.update);
-router.delete('/:id', ContentController.destroy);
-router.post('/increment-views/:id', ContentController.incrementViews);
-router.post('/increment-votes/:id', ContentController.incrementVotes);
-router.get('/tag/:tagName', ContentController.findContentByTag)
+contentRoutes.get('/', ContentController.index);
+contentRoutes.get('/:id', ContentController.show);
+contentRoutes.post('/', upload.array('media', 10), ContentController.store);
+contentRoutes.put('/:id', upload.array('media', 10),ContentController.update);
+contentRoutes.delete('/:id', ContentController.destroy);
+contentRoutes.post('/increment-views/:id', ContentController.incrementViews);
+contentRoutes.post('/increment-votes/:id', ContentController.incrementVotes);
+contentRoutes.get('/tag/:tagName', ContentController.findContentByTag)
 
-export default router
+export default contentRoutes

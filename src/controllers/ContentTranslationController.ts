@@ -61,14 +61,14 @@ const ContentTranslationController = {
 
     update: async (req: Request, res: Response) => {
         const { id } = req.params;
-        const { language, title, content } = req.body;
-        if (!id || !language || !title || !content) res.status(400).json({ message: "Dados incompletos para atualizar a tradução" });
+        const { language, title, content: description } = req.body;
+        if (!id || !language || !title || !description) res.status(400).json({ message: "Dados incompletos para atualizar a tradução" });
 
         try {
             const updatedContentTranslation = await ContentTranslationModel.update(id, {
                 language,
                 title,
-                content,
+                content: description,
             });
             if (!updatedContentTranslation) res.status(404).json({ message: "Conteúdo traduzido não encontrado" });
             res.status(200).json(updatedContentTranslation);
@@ -78,16 +78,16 @@ const ContentTranslationController = {
         }
     },
 
-    delete: async (req: Request, res: Response) => {
+    destroy: async (req: Request, res: Response) => {
         const { id } = req.params;
         if (!id) res.status(400).json({ message: "ID do conteúdo traduzido não fornecido" });
 
         try {
-            const deletedContentTranslation = await ContentTranslationModel.delete(id);
-            if (!deletedContentTranslation) res.status(404).json({ message: "Conteúdo traduzido não encontrado" });
-            res.status(200).json(deletedContentTranslation);
+            const destroydContentTranslation = await ContentTranslationModel.delete(id);
+            if (!destroydContentTranslation) res.status(404).json({ message: "Conteúdo traduzido não encontrado" });
+            res.status(200).json(destroydContentTranslation);
         } catch (error) {
-            console.error("Erro no ContentTranslationController.delete:", error);
+            console.error("Erro no ContentTranslationController.destroy:", error);
             res.status(500).json({ message: "Erro ao deletar a tradução", error });
         }
     }

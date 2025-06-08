@@ -7,6 +7,6 @@ serieRoutes.get('/', SerieController.index);
 serieRoutes.get('/:id', SerieController.show);
 serieRoutes.post('/', SerieController.store);
 serieRoutes.put('/:id', SerieController.update);
-serieRoutes.delete('/:id', SerieController.delete);
+serieRoutes.delete('/:id', SerieController.destroy);
 
 export default serieRoutes;

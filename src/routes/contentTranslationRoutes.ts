@@ -8,6 +8,6 @@ contentTranslationRoutes.get("/:id", ContentTranslationController.show);
 contentTranslationRoutes.get("/:contentId", ContentTranslationController.showByContentId);
 contentTranslationRoutes.post("/", ContentTranslationController.store);
 contentTranslationRoutes.put("/:id", ContentTranslationController.update);
-contentTranslationRoutes.delete("/:id", ContentTranslationController.delete);
+contentTranslationRoutes.delete("/:id", ContentTranslationController.destroy);
 
 export default contentTranslationRoutes;

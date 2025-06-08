@@ -72,7 +72,7 @@ const SerieController = {
         }
     },
 
-    delete: async (req: Request, res: Response) => {
+    destroy: async (req: Request, res: Response) => {
 
         const {id} = req.params;
         if (!id) res.status(404).json({message: "Id não informado"});
@@ -83,7 +83,7 @@ const SerieController = {
             res.status(200).json({serie});
 
         } catch (error) {
-            console.error("Erro no SerieController.delete:", error);
+            console.error("Erro no SerieController.destroy:", error);
             res.status(500).json({message: "Erro ao apagar serie", error});
         }
     }

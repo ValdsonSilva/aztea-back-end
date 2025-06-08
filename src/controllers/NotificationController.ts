@@ -62,7 +62,7 @@ const NotificationController = {
         }
     },
 
-    delete: async (req: Request, res: Response) => {
+    destroy: async (req: Request, res: Response) => {
         const { id } = req.params;
         if (!id) res.status(404).json({message: "ID não informado"});
 
@@ -72,7 +72,7 @@ const NotificationController = {
             res.status(200).json(notification);
 
         } catch (error) {
-            console.error("Erro no NotificationController.delete:", error);
+            console.error("Erro no NotificationController.destroy:", error);
             res.status(500).json({message: "Erro ao deletar notificação", error});
         }
     }

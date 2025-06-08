@@ -7,6 +7,6 @@ tagRoutes.get("/", TagController.index);
 tagRoutes.get("/:id", TagController.show);
 tagRoutes.post("/", TagController.store);
 tagRoutes.put("/:id", TagController.update);
-tagRoutes.delete("/:id", TagController.delete);
+tagRoutes.delete("/:id", TagController.destroy);
 
 export default tagRoutes;

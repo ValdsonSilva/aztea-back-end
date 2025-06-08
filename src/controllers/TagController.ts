@@ -70,8 +70,8 @@ const TagController = {
             res.status(500).json({message: "Erro ao atualizar tag", error});
         }
     },
-    // delete
-    delete: async (req: Request, res: Response) => {
+    // destroy
+    destroy: async (req: Request, res: Response) => {
         const {id} = req.params;
 
         if (!id) res.status(404).json({message: "ID não informado"});
@@ -83,8 +83,8 @@ const TagController = {
 
             res.status(200).json(tag)
         } catch (error) {
-            console.error("Erro no TagController.delete:", error);
-            res.status(500).json({message: "Erro ao deleter a tag", error});
+            console.error("Erro no TagController.destroy:", error);
+            res.status(500).json({message: "Erro ao destroyr a tag", error});
         }
     }
 }

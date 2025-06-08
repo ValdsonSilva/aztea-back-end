@@ -1,5 +1,7 @@
 import { CommentModel } from "../models/CommentModel.js";
 import { Request, Response } from "express";
+import { NotificationModel } from "../models/NotificationModel.js";
+import { connect } from "http2";
 
 const CommentController = {
 
@@ -58,11 +60,14 @@ const CommentController = {
     },
 
     store: async (req: Request, res: Response) => {
-        const { content, user, text } = req.body;
-        if (!content || !user || !text) res.status(404).json({ message: "Dados do comentário não informados" });
+        const { contentId, userId, text } = req.body;
+        if (!contentId || !userId || !text) res.status(404).json({ message: "Dados do comentário não informados" });
 
         try {
-            const comment = await CommentModel.create({text, content, user});
+            const comment = await CommentModel.create({text, content: {connect: {id: contentId}}, user: {connect: {id: userId}}});
+            if (comment) {
+                const notification = await NotificationModel.create({ message: `New comment on your last post`, user: {connect: {id: userId}} });
+            }
             res.status(201).json(comment);
         } catch (error) {
             console.error("Erro no CommentController.store:", error);
@@ -85,7 +90,7 @@ const CommentController = {
         }
     },
 
-    delete: async (req: Request, res: Response) => {
+    destroy: async (req: Request, res: Response) => {
         const { id } = req.params;
         if (!id) res.status(404).json({ message: "ID do comentário não informado" });
 
@@ -94,7 +99,7 @@ const CommentController = {
             if (!comment) res.status(404).json({ message: "Comentário não encontrado" });
             res.status(200).json(comment);
         } catch (error) {
-            console.error("Erro no CommentController.delete:", error);
+            console.error("Erro no CommentController.destroy:", error);
             res.status(500).json({ message: "Erro ao deletar comentário", error });
         }
     }

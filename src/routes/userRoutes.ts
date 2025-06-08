@@ -16,7 +16,7 @@ userRoutes.post('/', UserController.store);
 // PUT /users/:id - Atualiza um usuário
 userRoutes.put('/:id', UserController.update);
 
-// DELETE /users/:id - Deleta um usuário
+// destroy /users/:id - Deleta um usuário
 userRoutes.delete('/:id', UserController.destroy);
 
 export default userRoutes;

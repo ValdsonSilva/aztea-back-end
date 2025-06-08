@@ -27,10 +27,17 @@ export const ContentTranslationModel = {
         });
     },
 
-    update: async (id: string, data: Prisma.ContentTranslationUpdateInput): Promise<ContentTranslation> => {
+    // atualiza passando o id do conteudo
+    update: async (id: string, contentId: string, language: string, data: Prisma.ContentTranslationUpdateInput): Promise<ContentTranslation | null> => {
+        const translation = await prisma.contentTranslation.findFirst({
+            where: {id, contentId, language}
+        });
+
+        if (!translation) return null;
+
         return await prisma.contentTranslation.update({
-            where: { id },
-            data,
+            where: { id: translation.id },
+            data
         });
     },
 
