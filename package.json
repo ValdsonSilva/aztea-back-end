@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --loader ts-node/esm --trace-warnings src/server.ts"
+    "dev": "node --loader ts-node/esm --trace-warnings src/server.ts",
+    "start": "node --loader ts-node/esm src/server.ts"
   },
   "keywords": [],
   "author": "",
