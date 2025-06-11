@@ -39,7 +39,7 @@ model Tag {
 
 model Series {
   id        String     @id @default(uuid())
-  title     String
+  title     String?
   userId    String
   user      User       @relation(fields: [userId], references: [id])
   episodes  Content[]

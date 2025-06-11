@@ -1,5 +1,14 @@
+import { Prisma, PrismaClient } from "@prisma/client";
+import { ContentModel } from "../models/ContentModel.js";
 import { SerieModel } from "../models/SerieModel.js";
 import { Request, Response } from "express";
+
+interface ISerieStore {
+    title: string,
+    userId: string,
+}
+
+const prisma = new PrismaClient();
 
 const SerieController = {
 
@@ -32,26 +41,45 @@ const SerieController = {
     },
 
     store: async (req: Request, res: Response) => {
+        const { title, userId, contentIds } = req.body;
 
-        const {title, userId} = req.body;
+        if (!title || !userId) res.status(400).json({ message: "Título ou ID do usuário não informado" });
 
-        const data = {
-            title : title, 
-            user: userId
+        const data: ISerieStore = {
+            title,
+            userId
         }
-
-        if (!title || !userId) res.status(404).json({message: "Título ou Id do usuário não informado"})
 
         try {
             const serie = await SerieModel.create(data);
-            if (!serie) res.status(404).json({message: "Serie não encontrada"})
-            res.status(200).json({serie})
+
+            if (!serie) res.status(500).json({ message: "Erro ao criar série" });
             
+
+            // Se vierem conteúdos, associe à série
+            if (Array.isArray(contentIds) && contentIds.length > 0) {
+                await Promise.all(
+                    contentIds.map((contentId) =>
+                        prisma.content.update({
+                            where: { id: contentId },
+                            data: { seriesId: serie.id },
+                        })
+                    )
+                );
+            }
+
+            const contents = await prisma.content.findMany({
+                where: { seriesId: serie.id },
+            });
+
+            res.status(201).json({ serie, contents });
+
         } catch (error) {
             console.error("Erro no SerieController.store:", error);
-            res.status(500).json({message: "Erro ao criar serie", error});
+            res.status(500).json({ message: "Erro ao criar série", error });
         }
     },
+
 
     update: async (req: Request, res: Response) => {
 
@@ -90,3 +118,40 @@ const SerieController = {
 }
 
 export default SerieController;
+
+// {
+// 	"id": "6b0c3ba0-ff5b-4973-a2f6-2538b99993e1",
+// 	"title": "English title 02",
+// 	"description": "I love to sing",
+// 	"thumbnailUrl": null,
+// 	"contentType": "image",
+// 	"published": false,
+// 	"scheduledAt": null,
+// 	"categoryId": "840d2b8e-649a-4b1f-9399-3177ffdb14cf",
+// 	"userId": "43d2ef09-b976-48c1-ad85-c6892cd512a1",
+// 	"seriesId": null,
+// 	"views": 0,
+// 	"votes": 0,
+// 	"createdAt": "2025-06-03T18:17:00.507Z",
+// 	"updatedAt": "2025-06-03T18:17:00.507Z",
+// 	"category": {
+// 		"id": "840d2b8e-649a-4b1f-9399-3177ffdb14cf",
+// 		"name": "Pop"
+// 	},
+// 	"user": {
+// 		"id": "43d2ef09-b976-48c1-ad85-c6892cd512a1",
+// 		"email": "valdsonmacedo15@gmail.com",
+// 		"password": "11122002",
+// 		"name": "Valdson Silva",
+// 		"bio": "Sou um jovem católico de 22 anos apaixonada por música católica. Sou ministro de música e toco violão.",
+// 		"avatarUrl": null,
+// 		"isAdmin": false,
+// 		"createdAt": "2025-05-10T18:32:06.175Z"
+// 	},
+// 	"series": null,
+// 	"media": [],
+// 	"tags": [],
+// 	"comments": [],
+// 	"favorites": [],
+// 	"translations": []
+// }
