@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { UserModel } from "../models/UserModel.js";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient()
 
 const UserController = {
 
@@ -33,11 +35,11 @@ const UserController = {
     store: async (req: Request, res: Response) => {
 
         try {
-            const { email, password, name, bio, avatarUrl } = req.body;
+            const { email, password, name, bio, avatarUrl, userType } = req.body;
             
             // Verifica se os campos obrigatórios estão presentes
-            if (!email || !password || !name) {
-                res.status(400).json({ message: "Email, senha e nome são obrigatórios" });
+            if (!email || !password || !name || !userType) {
+                res.status(400).json({ message: "Email, senha, nome e o tipo de usuário são obrigatórios" });
             }
 
             const user = await UserModel.create({
@@ -45,24 +47,31 @@ const UserController = {
                 password,
                 name,
                 bio,
-                avatarUrl
+                avatarUrl,
+                userType
             });
 
             res.status(201).json(user);
 
         } catch (error: unknown) {
 
-            console.error("Erro ao criar usuário OPA:", error);
             res.status(500).json({ message: "Erro ao criar usuário", error});
         }
     },
 
     update: async (req: Request, res: Response) => {
 
-        try {
-            const user = await UserModel.update(req.params.id, req.body);
+        const {id} = req.params;
 
-            if (!user) res.status(404).json({ message: "Usuário não encontrado" });
+        try {
+
+            const foundUser = await UserModel.findById(id);
+
+            if (!foundUser) res.status(404).json({message: "Usuário não encontrado"});
+
+            const user = await UserModel.update(foundUser?.id, req.body);
+
+            if (!user) res.status(400).json({ message: "Usuário não atualizado" });
 
             res.status(200).json(user);
 
@@ -73,7 +82,20 @@ const UserController = {
     },
 
     destroy: async (req: Request, res: Response) => {
+
+        const {id} = req.params;
+
         try {
+
+            const foundUser = await UserModel.findById(id);
+
+            if (!foundUser) res.status(404).json({message: "Usuário não encontrado"});
+
+            const isAdmin = foundUser?.isAdmin ? true : false;
+
+            // only admin's users can delete another user account automaticly
+            if (!isAdmin) res.status(403).json({message: "Apenas admin pode deleter"});
+
             const user = await UserModel.delete(req.params.id);
 
             if (!user) res.status(404).json({ message: "Usuário não encontrado" });

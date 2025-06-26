@@ -2,21 +2,15 @@ import { Request, Response } from "express";
 import { ContentModel } from "../models/ContentModel.js";
 import { MediaModel } from "../models/MediaModel.js"
 import fs from "fs";
-import path from "path";
 import { ContentTranslationModel } from "../models/ContentTranslationModel.js";
 import { PrismaClient } from "@prisma/client";
 import cloudinary from "../config/cloudinary.js";
-import { Http2ServerRequest } from "http2";
 import { TagModel } from "../models/TagModel.js";
+import { getMediaType } from "../utils/getMediaType.js";
+import { UserModel } from "../models/UserModel.js";
+import { SubmissionModel } from "../models/SubmissionModel.js";
 
 const prisma = new PrismaClient();
-
-function getMediaType(mime: string): 'image' | 'video' | 'pdf' | 'other' {
-  if (mime.startsWith('image/')) return 'image';
-  if (mime.startsWith('video/')) return 'video';
-  if (mime === 'application/pdf') return 'pdf';
-  return 'other';
-}
 
 const ContentController = {
 
@@ -57,14 +51,27 @@ const ContentController = {
   },
 
   store: async (req: Request, res: Response) => {
-    try {
-      const data = req.body;
-      const files = req.files as Express.Multer.File[];
+    
+    const {userId} = req.body;
+    const data = req.body;
+    const files = req.files as Express.Multer.File[];
 
-      // Aqui você pode fazer validação mínima dos dados essenciais, exemplo:
-      if (!data.title || !data.contentType || !data.categoryId || !data.userId) {
-        res.status(400).json({ message: "Campos obrigatórios faltando" });
-      }
+    if (!userId) res.status(404).json({message: "Id do usuário não informado"});
+
+    // Aqui você pode fazer validação mínima dos dados essenciais, exemplo:
+    if (!data.title || !data.contentType || !data.categoryId || !data.userId) {
+      res.status(400).json({ message: "Campos obrigatórios faltando" });
+    }
+
+    try {
+
+      const foundUser = await UserModel.findById(userId);
+
+      if (!foundUser) res.status(404).json({message: "Usuário não encontrado"});
+
+      const isAdmin = foundUser?.isAdmin ? true : false
+
+      if (!isAdmin) res.status(403).json({message: "Só administradores podem postar um conteúdo"});
 
       // criando conteudo base
       const content = await ContentModel.create({

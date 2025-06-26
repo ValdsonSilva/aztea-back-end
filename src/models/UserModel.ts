@@ -18,6 +18,7 @@ export const UserModel = {
         name: string;
         bio?: string;
         avatarUrl?: string;
+        userType: string
     }): Promise<User | null> => {
         return await prisma.user.create({data});
     },

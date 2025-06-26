@@ -16,11 +16,12 @@ const router = express.Router();
 
 // públicas
 router.use('/auth', loginRoutes);
+router.use('/users', userRoutes);
 
-// router.use(authenticateToken); // Middleware aplicado globalmente a partir daqui
+router.use(authenticateToken); // Middleware aplicado globalmente a partir daqui
 
 // privadas
-router.use('/users', userRoutes);
+// router.use('/users', userRoutes);
 router.use('/contents', contentRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/tags', tagRoutes);
