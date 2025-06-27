@@ -134,7 +134,7 @@ const ContentController = {
           );
         }
       }
-
+      
       // Conecta tags existentes
       if (data.tags) {
         const tags = JSON.parse(data.tags);

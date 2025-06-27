@@ -30,6 +30,7 @@ model Category {
   id        String     @id @default(uuid())
   name      String     @unique
   contents  Content[]
+  Submission Submission[]
 }
 
 model Tag {
@@ -45,6 +46,7 @@ model Series {
   user      User       @relation(fields: [userId], references: [id])
   episodes  Content[]
   createdAt DateTime   @default(now())
+  Submission Submission[]
 }
 
 model Content {
@@ -80,6 +82,7 @@ model Media {
   url        String
   publicId   String?
   createdAt  DateTime @default(now())
+  Submission Submission[]
 }
 
 model ContentTag {
@@ -88,6 +91,7 @@ model ContentTag {
   content    Content  @relation(fields: [contentId], references: [id])
   tagId      String
   tag        Tag      @relation(fields: [tagId], references: [id])
+  Submission Submission[]
 }
 
 model Favorite {
@@ -129,14 +133,26 @@ model ContentTranslation {
 }
 
 model Submission {
-  id           String   @id @default(uuid())
-  title        String
-  description  String?
-  userId       String
-  user         User     @relation("UserSubmissions", fields: [userId], references: [id])
-  status       String   @default("pending") // pending, approved, rejected
-  adminId      String?
-  admin        User?    @relation("AdminReviewer", fields: [adminId], references: [id])
-  reviewedAt   DateTime?
-  createdAt    DateTime @default(now())
+  id            String   @id @default(uuid())
+  title         String
+  description   String?
+  thumbnailUrl  String? 
+  contentType   String
+  categoryId    String
+  category      Category @relation(fields: [categoryId], references: [id])
+  userId        String
+  user          User     @relation("UserSubmissions", fields: [userId], references: [id])
+  seriesId      String?
+  series        Series?  @relation(fields: [seriesId], references: [id])
+  media         Media[] 
+  tags          ContentTag[]
+  
+  status        String   @default("pending") // e.g. 'pending', 'approved', 'rejected'
+  feedback      String?  // comentário do avaliador
+  reviewedAt    DateTime?
+  reviewerId    String?  // quem avaliou
+  reviewer      User?    @relation("AdminReviewer", fields: [reviewerId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
