@@ -15,7 +15,7 @@ model User {
   bio            String?
   avatarUrl      String?
   isAdmin        Boolean         @default(false)
-  userType       String          @default("artist") // dev / artist / founder (fundador) / 
+  userType       String          @default("artist") // dev / artist / founder (fundador) / reviewer
   contents       Content[]
   favorites      Favorite[]
   notifications  Notification[]
