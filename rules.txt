@@ -6,10 +6,10 @@ Nem todo mundo vai ter o mesmo acesso.
 Exemplos:
 • Eu (fundador) tenho acesso total – posso ver tudo e mudar regras. --
 • O programador não pode excluir usuário sem autorização. --
-• Um influenciador pode subir vídeo, mas não pode publicar direto.
+• Um influenciador pode subir vídeo, mas não pode publicar direto. --
 Temos que deixar isso definido no código e no painel.
 
-2️⃣ Revisão / Aprovação de Conteúdo
+2️⃣ Revisão / Aprovação de Conteúdo --
 Tudo que for enviado por criadores NÃO pode ir pro ar automaticamente.
 Exemplo: Um artista sobe um vídeo → entra como “pendente” → a equipe revisa → só depois aparece na plataforma.
 Estilo Netflix: tudo passa por curadoria antes.

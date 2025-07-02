@@ -21,6 +21,14 @@ export const SubmissionModel = {
         });
     },
 
+    findByPending: async (): Promise<Submission[] | null> => {
+        return await prisma.submission.findMany({
+            where: {
+                status: "pending",
+            }
+        });
+    },
+
     create: async (data: Prisma.SubmissionCreateInput): Promise<Submission> => {
         return await prisma.submission.create({
             data

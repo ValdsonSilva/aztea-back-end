@@ -6,7 +6,7 @@ import { ContentTranslationModel } from "../models/ContentTranslationModel.js";
 import { PrismaClient } from "@prisma/client";
 import cloudinary from "../config/cloudinary.js";
 import { TagModel } from "../models/TagModel.js";
-import { getMediaType } from "../utils/getMediaType.js";
+import { getMediaType } from "../services/getMediaType.js";
 import { UserModel } from "../models/UserModel.js";
 import { SubmissionModel } from "../models/SubmissionModel.js";
 
