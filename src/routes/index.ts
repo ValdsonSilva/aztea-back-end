@@ -11,12 +11,14 @@ import contentTranslationRoutes from './contentTranslationRoutes.js';
 import { authenticateToken } from '../middlewars/auth.js';
 import loginRoutes from './loginRoutes.js';
 import mediaRoutes from './mediaRoutes.js';
+import submissionRoutes from './submissionRoutes.js';
 
 const router = express.Router();
 
 // públicas
 router.use('/auth', loginRoutes);
 router.use('/users', userRoutes);
+router.use('/submissions', submissionRoutes);
 
 router.use(authenticateToken); // Middleware aplicado globalmente a partir daqui
 
@@ -31,5 +33,6 @@ router.use('/notifications', notificationRoutes);
 router.use('/comments', commentRoutes);
 router.use('/content-translations', contentTranslationRoutes);
 router.use('/medias', mediaRoutes);
+// router.use('/submissions', submissionRoutes);
 
 export default router;

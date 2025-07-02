@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
-import { SubmissionModel } from "../models/SubmissionModel";
+import { SubmissionModel } from "../models/SubmissionModel.js";
 import { PrismaClient } from "@prisma/client";
-import { ContentModel } from "../models/ContentModel";
-import { MediaModel } from "../models/MediaModel";
-import cloudinary from "../config/cloudinary";
-import { getMediaType } from "../services/getMediaType";
+import { MediaModel } from "../models/MediaModel.js";
+import cloudinary from "../config/cloudinary.js";
+import { getMediaType } from "../services/getMediaType.js";
 import fs from "fs";
-import { isUserReviewerCheck } from "../services/isUserReviewerCheck";
-import { UserModel } from "../models/UserModel";
+import { isUserReviewerCheck } from "../services/isUserReviewerCheck.js";
+import { UserModel } from "../models/UserModel.js";
 
 const prisma = new PrismaClient();
 
@@ -41,7 +40,7 @@ const SubmissionController = {
     },
 
     // create
-    create: async (req: Request, res: Response) => {
+    store: async (req: Request, res: Response) => {
         
         const data = req.body;
         const files = req.files as Express.Multer.File[];
@@ -161,7 +160,7 @@ const SubmissionController = {
 
             const isUserReviewer = isUserReviewerCheck(foundUser);
 
-            if (!isUserReviewer) return res.status(403).json({message:"Só revisores podem aprovar um conteúdo"});
+            if (!isUserReviewer) res.status(403).json({message:"Só revisores podem aprovar um conteúdo"});
 
             const submission = await prisma.submission.findUnique({
                 where: { id },
@@ -209,7 +208,7 @@ const SubmissionController = {
                     },
             });
 
-            return res.status(201).json({ message: "Submission approvada", content });
+            res.status(201).json({ message: "Submission approvada", content });
 
         } catch (error) {
             console.error("Erro no SubmissionControler.approve:", error);
@@ -264,9 +263,9 @@ const SubmissionController = {
 
             const submission = await prisma.submission.findUnique({ where: { id } });
 
-            if (!submission) return res.status(404).json({ message: "Submissão não encontrada" });
+            if (!submission) res.status(404).json({ message: "Submissão não encontrada" });
 
-            if (submission.status !== "pending") return res.status(400).json({ message: "Apenas submissões pendentes podem ser rejeitadas" });
+            if (submission.status !== "pending") res.status(400).json({ message: "Apenas submissões pendentes podem ser rejeitadas" });
 
 
             const updated = await prisma.submission.update({

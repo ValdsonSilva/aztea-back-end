@@ -13,9 +13,9 @@ export const UserModel = {
     },
 
     create: async (data: {
-        email: string;
         password: string;
         name: string;
+        email: string;
         bio?: string;
         avatarUrl?: string;
         userType: string

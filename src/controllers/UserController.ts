@@ -1,6 +1,21 @@
 import { Request, Response } from "express";
 import { UserModel } from "../models/UserModel.js";
+import cloudinary from "../config/cloudinary.js";
+import { getMediaType } from "../services/getMediaType.js";
+import { MediaModel } from "../models/MediaModel.js";
+import fs from "fs";
 import { PrismaClient } from "@prisma/client";
+
+interface IUserType {
+    password: string;
+    name: string;
+    email: string;
+    bio?: string;
+    avatarUrl?: string;
+    userType: string
+}
+
+const allowedUserTypes = ["admin", "developer", "founder", "reviewer", "artist"];
 
 const prisma = new PrismaClient()
 
@@ -19,7 +34,7 @@ const UserController = {
         }
     },
 
-    show: async (req: Request, res: Response) =>{
+    show: async (req: Request, res: Response) => { 
 
         try {
             const user = await UserModel.findById(req.params.id);
@@ -34,31 +49,73 @@ const UserController = {
 
     store: async (req: Request, res: Response) => {
 
-        try {
-            const { email, password, name, bio, avatarUrl, userType } = req.body;
+        const userData:IUserType = req.body;
+        const avatarUrl = req.files as Express.Multer.File[];
+
+        const data:IUserType = {
+            name: userData.name,
+            password: userData.password,
+            email: userData.email,
+            bio: userData.bio,
+            userType: userData.userType
+        }
+
             
-            // Verifica se os campos obrigatórios estão presentes
-            if (!email || !password || !name || !userType) {
-                res.status(400).json({ message: "Email, senha, nome e o tipo de usuário são obrigatórios" });
+        // Verifica se os campos obrigatórios estão presentes
+        if (!data.email || !data.password || !data.name || !data.userType) {
+            res.status(400).json({ message: "Email, senha, nome e o tipo de usuário são obrigatórios" });
+        }
+
+        try {
+
+            const permissionCheck = data.userType && allowedUserTypes.includes(data.userType);
+
+            if (!permissionCheck) res.status(400).json({message: "Tipo de usuário inexistente"});
+
+            const user = await UserModel.create(data);
+
+            if (avatarUrl && avatarUrl.length > 0) {
+                console.log("Entrou em mídia");
+
+                const safeName = data.name.replace(/\s+/g, '-').toLowerCase(); // tratando o nome do usuário
+
+                await Promise.all(
+                    avatarUrl.map(async (avatar) => {
+                        try {
+                            console.log("Processando:", avatar.originalname);
+                            const type = getMediaType(avatar.mimetype);
+
+                            const result = await cloudinary.uploader.upload(avatar.path, {
+                                folder: `aztea/avatares/${safeName}/${type}`,
+                                resource_type: type === 'video' ? 'video' : 'auto',
+                            });
+
+                            console.log("Arquivo enviado:", result.secure_url);
+
+                            await prisma.user.update({
+                                where: { id: user?.id },
+                                data: { avatarUrl: result.secure_url },
+                            });
+
+                            fs.unlinkSync(avatar.path);
+
+                        } catch (error) {
+                            console.error(`Erro ao subir arquivo ${avatar.originalname}:`, error);
+                        }
+                    })
+                );
             }
 
-            const user = await UserModel.create({
-                email,
-                password,
-                name,
-                bio,
-                avatarUrl,
-                userType
-            });
 
             res.status(201).json(user);
 
         } catch (error: unknown) {
-
+            console.log("Erro no UserController.store", error)
             res.status(500).json({ message: "Erro ao criar usuário", error});
         }
     },
 
+    // tem que atualizar este controller
     update: async (req: Request, res: Response) => {
 
         const {id} = req.params;
