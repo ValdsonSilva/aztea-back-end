@@ -8,7 +8,7 @@ import cloudinary from "../config/cloudinary.js";
 import { TagModel } from "../models/TagModel.js";
 import { getMediaType } from "../services/getMediaType.js";
 import { UserModel } from "../models/UserModel.js";
-import { SubmissionModel } from "../models/SubmissionModel.js";
+import { contentService, ICreateContentDTO } from "../services/content/contentService.js";
 
 const prisma = new PrismaClient();
 
@@ -53,15 +53,26 @@ const ContentController = {
   store: async (req: Request, res: Response) => {
     
     const {userId} = req.body;
-    const data = req.body;
+    const bodyData:ICreateContentDTO = req.body;
     const files = req.files as Express.Multer.File[];
 
     if (!userId) res.status(404).json({message: "Id do usuário não informado"});
 
     // Aqui você pode fazer validação mínima dos dados essenciais, exemplo:
-    if (!data.title || !data.contentType || !data.categoryId || !data.userId) {
+    if (!bodyData.title || !bodyData.contentType || !bodyData.categoryId || !bodyData.userId) {
       res.status(400).json({ message: "Campos obrigatórios faltando" });
     }
+
+    const data: ICreateContentDTO = {
+      userId: bodyData.userId,
+      title: bodyData.title,
+      description: bodyData.description,
+      contentType: bodyData.contentType,
+      categoryId: bodyData.categoryId,
+      translations: bodyData.translations,
+      tags: bodyData.tags,
+      files: files
+    };
 
     try {
 
@@ -74,101 +85,7 @@ const ContentController = {
       if (!isAdmin) res.status(403).json({message: "Só administradores podem postar um conteúdo"});
 
       // criando conteudo base
-      const content = await ContentModel.create({
-        title: data.title,
-        contentType: data.contentType,
-        category: {
-          connect: {id: data.categoryId}
-        },
-        user: {
-          connect: {id: data.userId}
-        },
-        description: data.description,
-      });
-
-      if (files && files.length > 0) {
-        console.log("Entrou em midia")
-        for (const file of files) {
-              try {
-                  console.log("processando", file.originalname)
-                  const type = getMediaType(file.mimetype);
-
-                  const result = await cloudinary.uploader.upload(file.path,{
-                    folder: `aztea/conteudos/${type}`,
-                    resource_type: type === 'video' ? 'video' : 'auto',
-                  })
-
-                  console.log("arquivos:", result);
-                  
-                  await MediaModel.create({
-                    content: {
-                      connect: {id: content.id}
-                    },
-                    url: result.secure_url,
-                    publicId: result.public_id,
-                    type,
-                  });
-
-                  fs.unlinkSync(file.path);
-              } catch (error) {
-                  console.log(`Erro ao subir arquivo ${file.originalname}`, error);
-              }
-
-        };
-      }
-
-      if (data.translations) {
-        const translations = JSON.parse(data.translations);
-        if (Array.isArray(translations)) {
-          await Promise.all(
-            translations.map((translation: any) =>
-              ContentTranslationModel.create({
-                language: translation.language,
-                title: translation.title,
-                content: {
-                  connect: {id: content.id}
-                },
-                description: translation.description,
-              })
-            )
-          );
-        }
-      }
-      
-      // Conecta tags existentes
-      if (data.tags) {
-        const tags = JSON.parse(data.tags);
-        if (Array.isArray(tags)) {
-            for (const tag of tags) {
-              let tagId: string;
-
-              if (tag.id) {
-                tagId = tag.id;
-
-              } else if (tag.name) {
-                const existingTag = await prisma.tag.findUnique({where: {name: tag.name}});
-
-                if (existingTag) {
-                  tagId = existingTag.id;
-
-                } else {
-                  const newTag = await prisma.tag.create({data: {name: tag.name}});
-                  tagId = newTag.id;
-
-                }
-              } else {
-                continue;
-              }
-
-              await prisma.contentTag.create({
-                data: {
-                  contentId: content.id,
-                  tagId,
-                }
-              });
-            }
-        }
-      }
+      const content = await contentService.createContent(data)
 
       res.status(201).json(content);
 

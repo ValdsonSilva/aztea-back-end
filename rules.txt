@@ -26,13 +26,13 @@ Mesmo que ainda não tenhamos pagamentos, o sistema já precisa estar pronto pra
 • Compartilhamento de receita tipo YouTube (70/30)
 Se a gente deixa isso pro futuro, vai custar caro e quebrar tudo depois.
 
-5️⃣ Notificações Reais (push e internas)
+5️⃣ Notificações Reais (push e internas) --
 Exemplo: Se o admin aprova o conteúdo → o criador recebe:
 – “Seu vídeo foi aprovado ✅”
 – “Seu conteúdo foi rejeitado ❌: motivo X”
 Também queremos notificações push no app ou navegador.
 
-6️⃣ Auditoria e Segurança
+6️⃣ Auditoria e Segurança --
 O sistema precisa registrar tudo.
 Exemplo:
 • Se alguém exclui um conteúdo, o sistema guarda: “Usuário X apagou conteúdo Y no dia tal, hora tal.”
@@ -44,7 +44,7 @@ Exemplo:
 • Vídeo com violência → botão “Denunciar” → vai pra revisão do admin
 A gente decide se exclui ou não. Isso evita problemas legais.
 
-8️⃣ Estrutura preparada para Apps no futuro
+8️⃣ Estrutura preparada para Apps no futuro --
 Não estamos fazendo só site.
 O back-end tem que ser feito como API, pra depois conectar fácil com app Android, iOS, TV etc.
 Se não fizer assim, vamos ter que refazer tudo depois.
