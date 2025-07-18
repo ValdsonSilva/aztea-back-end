@@ -27,7 +27,28 @@ model User {
   series        Series[]
   reviewedSubs  Submission[]   @relation("AdminReviewer")
   submissions   Submission[]   @relation("UserSubmissions")
+  report        Report[]
 }
+
+model Report {
+  id                String   @id @default(uuid())
+  description       String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  deletedAt         DateTime? // Para soft delete
+  moderatorComment  String?
+  moderatorId       String  @default("")
+  resolved          Boolean @default(false)
+  // Relacionamentos
+  userId            String
+  contentId         String
+  user              User    @relation(fields: [userId], references: [id])
+  content           Content @relation(fields: [contentId], references: [id])
+
+  @@index([userId])
+  @@index([contentId])
+}
+
 
 model Category {
   id         String       @id @default(uuid())
@@ -78,6 +99,7 @@ model Content {
   favorites    Favorite[]
   media        Media[]
   deletedAt    DateTime?
+  report Report[]
 }
 
 model Media {

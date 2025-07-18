@@ -4,7 +4,7 @@ import express from "express";
 import cors from "cors";
 import WebSocket, {WebSocketServer} from "ws";
 import http from "http";
-import router from "./routes/index.js";
+import router from "./shared/routes/index.js";
 
 const app = express();
 app.use(cors());

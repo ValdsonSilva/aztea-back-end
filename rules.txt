@@ -38,7 +38,7 @@ Exemplo:
 • Se alguém exclui um conteúdo, o sistema guarda: “Usuário X apagou conteúdo Y no dia tal, hora tal.”
 Isso protege o sistema e a equipe.
 
-7️⃣ Sistema de Denúncias
+7️⃣ Sistema de Denúncias --
 O usuário final tem que poder denunciar conteúdo ofensivo ou ilegal.
 Exemplo:
 • Vídeo com violência → botão “Denunciar” → vai pra revisão do admin
