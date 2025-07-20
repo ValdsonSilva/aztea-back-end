@@ -18,6 +18,9 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   deletedAt     DateTime?
+  planExpiresAt DateTime?
+  lastLogin     DateTime?      @default(now())
+  isEmailVerified Boolean      @default(false)
   userType      String         @default("artist")
   publicId      String?
   comments      Comment[]
@@ -28,6 +31,32 @@ model User {
   reviewedSubs  Submission[]   @relation("AdminReviewer")
   submissions   Submission[]   @relation("UserSubmissions")
   report        Report[]
+  Plan Plan[]
+  Payment Payment[]
+}
+
+model Plan {
+  id          String   @id @default(uuid())
+  name        String   @unique // free, premium, etc.
+  price       Float
+  description String?
+  isActive    Boolean  @default(true)
+  expiresAt   DateTime?
+  users     User[]
+  Payment Payment[]
+}
+
+model Payment {
+  id         String   @id @default(uuid())
+  userId     String
+  planId     String
+  amount     Float
+  status     String   @default("pending") // pending, completed, failed
+  method     String   // credit_card, paypal, etc.
+  paidAt     DateTime?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  plan       Plan     @relation(fields: [planId], references: [id])
 }
 
 model Report {

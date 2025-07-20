@@ -5,6 +5,7 @@ import { generateSafeName } from '../../shared/utils/generateSafeName.js';
 import { getMediaType } from '../../shared/services/getMediaType.js';
 import cloudinary from '../../shared/config/cloudinary.js';
 import { uploadFile } from '../../shared/services/UploadFileService.js';
+
 const prisma = new PrismaClient();
 
 interface UpdateAvatarDTO {
@@ -15,7 +16,9 @@ interface UpdateAvatarDTO {
 export const userServices = {
 
   async deleteUser(requesterId: string, targetUserId: string): Promise<User> {
-      const targetUser = await prisma.user.findUnique({ where: { id: targetUserId } });
+
+      const targetUser = await UserModel.findById(targetUserId);
+
       if (!targetUser) {
         throw { status: 404, message: "Usuário não encontrado." };
       }
@@ -26,18 +29,17 @@ export const userServices = {
         throw {status: 404, message: "Usuário requisitante não encontrado"}
       }
 
-      const isAdmin = userRequester?.userType === 'admin';
       const isAnotherUserTryingToDeleteArtist = userRequester?.userType !== "admin";
-
-      if (!isAdmin && !isAnotherUserTryingToDeleteArtist) {
-        throw { status: 403, message: "Você não tem permissão para deletar este usuário." };
-      }
 
       if (isAnotherUserTryingToDeleteArtist) {
         throw { status: 403, message: "Ação restrita. Apenas admins podem deletar artistas." };
       }
 
       const user = await UserModel.delete(targetUser.id);
+
+      if (!user) {
+        throw { status: 500, message: "Erro ao deletar o usuário." };
+      }
 
       return user;
   },
