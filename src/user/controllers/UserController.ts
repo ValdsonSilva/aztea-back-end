@@ -4,7 +4,7 @@ import allowedUserTypes from "../../shared/utils/allowedUserTypes.js";
 import { uploadFiles } from "../../shared/services/UploadFiles.js";
 import { userServices } from "../services/userServices.js";
 
-interface IUserType {
+export interface IUserType {
     password: string;
     name: string;
     email: string;
@@ -54,18 +54,9 @@ const UserController = {
             userType: userData.userType
         }
 
-        // Verifica se os campos obrigatórios estão presentes
-        if (!data.email || !data.password || !data.name || !data.userType) {
-            return res.status(400).json({ message: "Email, senha, nome e o tipo de usuário são obrigatórios" });
-        }
-
         try {
 
-            const permissionCheck = data.userType && allowedUserTypes.includes(data.userType);
-
-            if (!permissionCheck) return res.status(400).json({message: "Tipo de usuário inexistente"});
-
-            const user = await UserModel.create(data);
+            const user = await userServices.createUser(data)
 
             await uploadFiles({user, data, avatarUrl});
 

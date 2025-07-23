@@ -19,7 +19,7 @@ Se um usuário é do Brasil, o conteúdo padrão precisa estar em português.
 Se for do Haiti, que apareça em crioulo ou francês.
 Exemplo: Não faz sentido mostrar primeiro um curso em inglês pra alguém do Haiti.
 
-4️⃣ Monetização Futura (estrutura pronta)
+4️⃣ Monetização Futura (estrutura pronta) --
 Mesmo que ainda não tenhamos pagamentos, o sistema já precisa estar pronto pra:
 • Planos pagos premium
 • Doações para artistas
@@ -54,5 +54,5 @@ A gente vai lidar com dados, vídeos, artistas, talvez menores de idade.
 Por isso precisamos de:
 • Página de Termos de Uso
 • Política de Privacidade clara
-Não podemos deixar isso pro final.
+Não podemos deixar isso pro final. 
 

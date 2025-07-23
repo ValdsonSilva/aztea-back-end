@@ -5,6 +5,10 @@ import { generateSafeName } from '../../shared/utils/generateSafeName.js';
 import { getMediaType } from '../../shared/services/getMediaType.js';
 import cloudinary from '../../shared/config/cloudinary.js';
 import { uploadFile } from '../../shared/services/UploadFileService.js';
+import { error } from 'console';
+import allowedUserTypes from '../../shared/utils/allowedUserTypes.js';
+import { isOfLegalAge } from '../../shared/utils/validateAge.js';
+import { json } from 'stream/consumers';
 
 const prisma = new PrismaClient();
 
@@ -85,6 +89,32 @@ export const userServices = {
     }
 
     return updatedUser;
+  },
+
+  async createUser(userData: User) {
+
+    const minAge = 18;
+
+    // Verifica se os campos obrigatórios estão presentes
+    if (!userData.email || !userData.password || !userData.name || !userData.userType) {
+        throw { status: 400, message: "Email, senha, nome e o tipo de usuário são obrigatórios" };
+    }
+
+    const IsUserUnderLimitAge = isOfLegalAge(userData.birthDate, minAge);
+
+    if (!IsUserUnderLimitAge) {
+      throw {status: 403, message: "Usuário menor de 18 anos não pode acessar a plataforma"}
+    }
+
+    const permissionCheck = userData.userType && allowedUserTypes.includes(userData.userType);
+
+    if (!permissionCheck) {
+      throw {status: 404, message: "Tipo de usuário inexistente"};
+    } 
+
+    const user = await UserModel.create(userData);
+
+    return user;
   },
 
   // outros métodos: findById, findByEmail, changePassword, etc.

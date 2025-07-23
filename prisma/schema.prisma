@@ -12,6 +12,10 @@ model User {
   email         String         @unique
   password      String
   name          String
+  termsAcceptedAt      DateTime? // Data/hora em que o usuário aceitou os Termos de Uso
+  privacyAcceptedAt    DateTime? // Data/hora em que o usuário aceitou a Política de Privacidade
+  termsVersionAccepted String?   // Versão dos termos aceitos (opcional, útil para histórico)
+  birthDate            DateTime? // Data de nascimento (para controle de idade, se necessário)
   bio           String?
   avatarUrl     String?
   isAdmin       Boolean        @default(false)
