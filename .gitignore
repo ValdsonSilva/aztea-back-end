@@ -42,4 +42,4 @@ coverage/
 # Others
 package-lock.json
 vercel.json
-.txt
+*.txt

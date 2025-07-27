@@ -91,7 +91,7 @@ export const userServices = {
     return updatedUser;
   },
 
-  async createUser(userData: User) {
+  async createUser(userData: User): Promise<User> {
 
     const minAge = 18;
 
