@@ -3,6 +3,7 @@ import { UserModel } from "../models/UserModel.js";
 import allowedUserTypes from "../../shared/utils/allowedUserTypes.js";
 import { uploadFiles } from "../../shared/services/UploadFiles.js";
 import { userServices } from "../services/userServices.js";
+import { User } from "@prisma/client";
 
 export interface IUserType {
     password: string;
@@ -10,7 +11,14 @@ export interface IUserType {
     email: string;
     bio?: string;
     avatarUrl?: string | Express.Multer.File[];
-    userType: string
+    userType: string;
+    city: string
+    state: string;
+    region: string;
+    country: string;
+    termsAcceptedAt: Date;
+    privacyAcceptedAt: Date;
+    termsVersionAccepted: string
 }
 
 const UserController = {
@@ -43,15 +51,20 @@ const UserController = {
 
     store: async (req: Request, res: Response) => {
 
-        const userData:IUserType = req.body;
+        const userData: User = req.body;
         const avatarUrl = req.files as Express.Multer.File[];
 
-        const data:IUserType = {
+        const data: User = {
             name: userData.name,
             password: userData.password,
             email: userData.email,
-            bio: userData.bio,
-            userType: userData.userType
+            termsAcceptedAt: userData.termsAcceptedAt,
+            birthDate: userData.birthDate,
+            privacyAcceptedAt: userData.privacyAcceptedAt,
+            city: userData.city,
+            state: userData.state,
+            region: userData.region,
+            country: userData.country,
         }
 
         try {
@@ -72,20 +85,8 @@ const UserController = {
     update: async (req: Request, res: Response) => {
 
         const {id} = req.params;
-        const { name, password, email, bio, userType }:IUserType = req.body;
+        const userData: IUserType = req.body;
         const avatarUrl = req.files as Express.Multer.File[];
-
-        if (!id) res.status(400).json({message: "Id não informado"});
-
-        const data: Partial<IUserType> = {};
-        if (name !== undefined) data.name = name;
-        if (password !== undefined) data.password = password;
-        if (email !== undefined) data.email = email;
-        if (bio !== undefined) data.bio = bio;
-        if (userType !== undefined) data.userType = userType;
-        if (avatarUrl && avatarUrl.length > 0) data.avatarUrl = avatarUrl;
-
-        if (!data) res.status(400).json({message: "Deve-se informar algum campo"});
 
         try {
 
@@ -100,7 +101,7 @@ const UserController = {
 
             await userServices.updateAvatar(data);
 
-            const user = await UserModel.update(foundUser?.id, data);
+            const user = await userServices.updateUser(id, userData)
 
             if (!user) res.status(400).json({ message: "Usuário não atualizado" });
 

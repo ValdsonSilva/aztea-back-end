@@ -74,14 +74,14 @@ export const contentService = {
         // Traduções
         if (translations && Array.isArray(translations)) {
             for (const translation of translations) {
-            await prisma.contentTranslation.create({
-                data: {
-                    language: translation.language,
-                    title: translation.title,
-                    description: translation.description,
-                    content: { connect: { id: content.id } },
-                },
-            });
+                await prisma.contentTranslation.create({
+                    data: {
+                        language: translation.language,
+                        title: translation.title,
+                        description: translation.description,
+                        content: { connect: { id: content.id } },
+                    },
+                });
             }
         }
 
@@ -106,5 +106,7 @@ export const contentService = {
         }
 
         return content;
-    }
+    },
+
+    
 };

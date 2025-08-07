@@ -1,6 +1,5 @@
 import {Router} from "express";
 import UserController from "../controllers/UserController.js";
-import multer from "multer";
 import upload from "../../shared/middlewars/multer.js";
 
 // routes/userRoutes.ts

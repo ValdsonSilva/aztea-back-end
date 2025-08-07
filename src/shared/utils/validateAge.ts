@@ -19,6 +19,6 @@ export function getAge(birthDate: Date | string): number {
  * @param birthDate Date | string (ISO)
  * @param minAge número mínimo de anos (ex: 18)
  */
-export function isOfLegalAge(birthDate: Date | string, minAge = 18): boolean {
+export function isOfLegalAge(birthDate: Date, minAge = 18): boolean {
   return getAge(birthDate) >= minAge;
 }
