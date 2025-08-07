@@ -1,11 +1,10 @@
 import { PrismaClient, User } from '@prisma/client';
 import { UserModel } from '../../user/models/UserModel.js'; // Update the path if the file exists elsewhere
-import fs, { unwatchFile } from 'fs';
+import fs from 'fs';
 import { generateSafeName } from '../../shared/utils/generateSafeName.js';
 import { getMediaType } from '../../shared/services/getMediaType.js';
 import cloudinary from '../../shared/config/cloudinary.js';
 import { uploadFile } from '../../shared/services/UploadFileService.js';
-import allowedUserTypes from '../../shared/utils/allowedUserTypes.js';
 import { isOfLegalAge } from '../../shared/utils/validateAge.js';
 import { IUserType } from '../controllers/UserController.js';
 
@@ -170,6 +169,4 @@ export const userServices = {
 
         return { status: 200, data: { message: "Usuário atualizado com sucesso" } };
   }
-
-  // outros métodos: findById, findByEmail, changePassword, etc.
 };
